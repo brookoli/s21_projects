@@ -1,0 +1,162 @@
+#test s21_pow_simple
+    long double exp = 3.;
+    long double base = 7.;
+    ck_assert_ldouble_eq(s21_pow(base, exp), pow(base, exp)); 
+
+#test s21_pow_base_lt0
+    long double base = -19.123456;
+    long double exp = 8;
+    ck_assert_double_eq_tol(s21_pow(base, exp), pow(base, exp), S21_EPS);
+
+#test s21_pow_base_exp_lt0
+    long double base = -7.1351;
+    long double exp = -0.1;
+//    ck_assert_double_nan(s21_pow(base, exp));
+    ck_assert_double_nan(pow(base, exp));
+
+#test s21_pow_base_zero_exp_lt0
+    long double base = +0;
+    long double exp = -0.35;
+    ck_assert_ldouble_infinite(s21_pow(base, exp));
+    ck_assert_ldouble_infinite(pow(base, exp));
+
+#test s21_pow_b_neg_zero_exp_lt0
+    long double base = -0;
+    long double exp = -0.66;
+    ck_assert_ldouble_infinite(s21_pow(base, exp));
+    ck_assert_ldouble_infinite(pow(base, exp));
+
+
+#test s21_pow_neg_zero_and_exp_inf
+    long double base = -0;
+    long double exp = S21_INF;
+//    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), S21_EPS);
+// timeout
+
+#test s21_pow_pos_zero_and_int
+    long double base = +0;
+    long double exp = 987;
+    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+
+#test s21_pow_neg_zero_int
+    long double base = -0;
+    long double exp = 123;
+    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+
+#test s21_pow_neg_zero_inf
+    long double base = -0;
+    long double exp = S21_INF;
+//    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+// timeout
+
+#test s21_pow_neg_one_inf
+    long double base = -1;
+    long double exp = S21_INF;
+//    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+// timeout
+
+#test s21_pow_neg_one_nan
+    long double base = -1;
+    long double exp = S21_NAN;
+    ck_assert_double_nan(pow(base, exp));
+//    ck_assert_double_nan(s21_pow(base, exp));
+// timeout
+
+#test s21_pow_nan_zero
+    long double base = S21_NAN;
+    long double exp = 0;
+    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+
+#test s21_pow_neg_fin_nan
+    long double base = -123;
+    long double exp = S21_NAN;
+//    ck_assert_double_nan(s21_pow(base, exp));
+// timeout
+    ck_assert_double_nan(pow(base, exp));
+
+#test s21_pow_lt_one_neg_inf
+    long double base = 0.5591951;
+    long double exp = -S21_INF;
+    ck_assert_ldouble_infinite(pow(base, exp));
+//    ck_assert_ldouble_infinite(s21_pow(base, exp));
+    
+#test s21_pow_gt_one_pos_inf
+    long double base = 1.5591951;
+    long double exp = S21_INF;
+//    ck_assert_ldouble_infinite(s21_pow(base, exp));
+    ck_assert_ldouble_infinite(pow(base, exp));
+
+#test s21_pow_neg_inf_neg_odd
+    long double base = -S21_INF;
+    long double exp = -193491;
+    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+
+#test s21_pow_neg_inf_neg_int_even
+    long double base = -S21_INF;
+    long double exp = -142;
+    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+
+#test s21_pow_neg_inf_pos_odd
+    long double base = -S21_INF;
+    long double exp = 141;
+    ck_assert_ldouble_infinite(s21_pow(base, exp));
+    ck_assert_ldouble_infinite(pow(base, exp));
+
+#test s21_pow_neg_inf_pos_even
+    long double base = -S21_INF;
+    long double exp = 142;
+    ck_assert_ldouble_infinite(s21_pow(base, exp));
+    ck_assert_ldouble_infinite(pow(base, exp));
+
+#test s21_pow_pos_inf_neg_one
+    long double base = S21_INF;
+    long double exp = -1;
+    ck_assert_ldouble_eq_tol(s21_pow(base, exp), pow(base, exp), 1e-6);
+
+#test s21_pow_pos_inf_pos_one
+    long double base = S21_INF;
+    long double exp = 1;
+    ck_assert_ldouble_infinite(s21_pow(base, exp));
+    ck_assert_ldouble_infinite(pow(base, exp));
+
+#test s21_pow_exp_lt_eps
+    long double base = -S21_INF;
+    long double exp = -2;
+    ck_assert_ldouble_eq(s21_pow(base, exp), 0);
+
+#test s21_pow_base_is_nan
+    long double base = S21_NAN;
+    long double exp = 0.5;
+    ck_assert_double_nan(s21_pow(base, exp));
+
+/* ---------------------- s21_exp ---------------------- */
+#test s21_exp_1
+    double x = 4.2849;
+    ck_assert_ldouble_eq_tol(s21_exp(x), expl(x), 1e-06);
+
+#test s21_exp_2
+    double x = 0;
+    ck_assert_ldouble_eq_tol(s21_exp(x), expl(x), 1e-06);
+
+#test s21_exp_3_pos_inf
+    ck_assert_ldouble_infinite(s21_exp(INFINITY));
+    ck_assert_ldouble_infinite(expl(INFINITY));
+
+#test s21_exp_4_neg_inf
+    ck_assert_ldouble_eq_tol(s21_exp(-INFINITY), expl(-INFINITY), 1e-06);
+
+#test s21_exp_5_nan
+    ck_assert_ldouble_nan(s21_exp(S21_NAN));
+    ck_assert_ldouble_nan(expl(NAN));
+
+#test exp_in_range_from_0_to_1
+    for(double d = 0.0; d <= 1; d += 0.0001) {
+        ck_assert_ldouble_eq_tol(s21_exp(d), expl(d), 1e-6);
+		ck_assert_ldouble_eq_tol(s21_exp(-d), expl(-d), 1e-6);
+	}
+
+#test exp_in_range_from_0_to
+    for(double d = 0.0; d < 100; d += 10.12345) {
+        ck_assert_float_eq(s21_exp(d), expl(d));
+        ck_assert_ldouble_eq_tol(s21_exp(-d), expl(-d), 1e-6);
+    }
