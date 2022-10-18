@@ -1,0 +1,125 @@
+#include <check.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h>
+#include <float.h>
+#include "s21_math.h"
+
+#define BUFF_SIZE 400
+
+// don't use ck_assert_float*
+// for create .c-fule with test, cmd in terminal:
+// `checkmk asd.check > c4test.c`
+// link lines with bad test to sourcecode.c:
+// `checkmk clean_mode=1 asd.check > c4test.c`
+
+#test s21_factorial_t1
+    ck_assert_int_eq(s21_factorial(0), 1);
+    ck_assert_int_eq(s21_factorial(1), 1);
+    ck_assert_int_eq(s21_factorial(2), 2);
+    ck_assert_int_eq(s21_factorial(3), 6);
+    ck_assert_int_eq(s21_factorial(4), 24);
+    ck_assert_int_eq(s21_factorial(9), 362880);
+    ck_assert_int_eq(s21_factorial(14), 87178291200);
+
+#test s21_abs0
+    ck_assert_int_eq(s21_abs(-1), abs(-1));
+    ck_assert_int_eq(s21_abs(1), abs(1));
+    ck_assert_int_eq(s21_abs(0), abs(0));
+    ck_assert_int_eq(s21_abs(INT_MAX), abs(INT_MAX));
+    ck_assert_int_eq(s21_abs(INT_MIN), abs(INT_MIN));
+
+#test s21_fabs_minus_all
+    ck_assert_ldouble_eq(s21_fabs(-1.0), fabs(-1.0));
+	ck_assert_ldouble_eq(s21_fabs(1.0), fabs(1.0));
+    ck_assert_ldouble_eq(s21_fabs(0.0), fabs(0.0));
+	ck_assert_ldouble_eq(s21_fabs(DBL_MAX), fabs(DBL_MAX));
+	ck_assert_ldouble_eq(s21_fabs(DBL_MIN), fabs(DBL_MIN));
+
+#test s21_floor1
+    for (int short i = 0; i < 10; ++i) {
+        char buf1[BUFF_SIZE] = "", buf2[BUFF_SIZE] = "";
+        int integer_num = random()%SHRT_MAX;
+        int remainder = (random() % SHRT_MAX) << 2;
+        sprintf(buf1, "%d", integer_num);
+        sprintf(buf2, "%d", remainder);
+        strcat(buf1, ".");
+        strcat(buf1, buf2);
+        char* buf1end;
+        double tmp = strtod(buf1, &buf1end);
+        memset(buf1, 0, strlen(buf1));
+        memset(buf2, 0, strlen(buf2));
+        // printf("%llf\n%llf\n", s21_floor(tmp), floorl(tmp));
+        ck_assert_ldouble_eq(s21_floor(tmp), floorl(tmp));
+    }
+
+#test s21_fmod1
+    for (int short i = -10; i < 10; ++i) {
+        char buf1[BUFF_SIZE] = "", buf2[BUFF_SIZE] = "";
+        int integer_num = random();
+        int remainder = (random() % SHRT_MAX) << 2;
+        sprintf(buf1, "%d", integer_num);
+        sprintf(buf2, "%d", remainder);
+        strcat(buf1, ".");
+        strcat(buf1, buf2);
+        char* buf1end;
+        double tmp = strtod(buf1, &buf1end), tmp2 = tmp / 2;
+        memset(buf1, 0, strlen(buf1));
+        memset(buf2, 0, strlen(buf2));
+        // printf("%llf\n%llf\n", s21_floor(tmp), floorl(tmp));
+        ck_assert_ldouble_eq(s21_fmod(tmp, tmp2), fmod(tmp, tmp2));
+        ck_assert_ldouble_eq(s21_fmod(tmp2, tmp), fmod(tmp2, tmp));
+    }
+
+//S21_LONG_EPS
+#test s21_log_x_eq_zero
+    ck_assert_ldouble_infinite(s21_log(0.000000));
+    ck_assert_ldouble_infinite(logl(0.000000));
+
+#test s21_log_x_is_inf
+    ck_assert_ldouble_infinite(s21_log(S21_INF));
+    ck_assert_ldouble_infinite(logl(S21_INF));
+
+#test s21_log_x_is_nan
+    ck_assert_ldouble_nan(s21_log(S21_NAN));
+    ck_assert_ldouble_nan(logl(S21_NAN));
+
+#test  s21_log_d
+    for (double d = 1e-16; d <= 1e16; d *= 10.1001) {
+        ck_assert_double_eq_tol(s21_log(d), logl(d), 1e-6);
+	}
+
+#test s21_fmod2
+    ck_assert_ldouble_eq(s21_fmod(-0.0000001, 2), fmod(-0.0000001, 2));
+
+#test s21_fmod3
+    ck_assert_ldouble_eq(s21_fmod(1, S21_INF), fmod(1, S21_INF));
+
+#test s21_ceil_test
+    for (double d = 0.0; d <= 1.0; d += 1e-4 ) {
+        ck_assert_double_eq(s21_ceil(d), ceill(d));
+        ck_assert_double_eq(s21_ceil(-d), ceill(-d));
+    }
+	for (double d = 1e-5; d < 1e10; d *= 10.001) {
+        ck_assert_double_eq(s21_ceil(d), ceill(d));
+		ck_assert_double_eq(s21_ceil(-d), ceill(-d));
+	}
+	ck_assert_ldouble_nan(s21_ceil(S21_NAN));
+	ck_assert_ldouble_infinite(s21_ceil(S21_INF));
+
+#test s21_sqrt_test
+    for (double d = 1e-16; d < 1e16; d *= 10.001) {
+        ck_assert_double_eq_tol(s21_sqrt(d), sqrtl(d), 1e-6);
+		ck_assert_ldouble_nan(s21_sqrt(-d));
+		ck_assert_ldouble_nan(sqrtl(-d));
+	}
+    
+#test floor_test
+    for (double d = 0.9; d < 50; d += 1.100345e-4) {
+        ck_assert_double_eq(s21_floor(d), floor(d));
+		ck_assert_double_eq(s21_floor(-d), floor(-d));
+	}
+
+

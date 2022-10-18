@@ -1,0 +1,55 @@
+#test extreme
+    double num = S21_INF;
+    ck_assert_double_nan(s21_cos(num));
+    ck_assert_double_nan(s21_sin(num));
+	ck_assert_double_nan(s21_tan(num));
+	ck_assert_double_nan(s21_acos(num));
+	ck_assert_double_nan(s21_asin(num));
+	ck_assert_double_eq(s21_atan(num), atanl(num));
+
+    num = -S21_INF;
+    ck_assert_double_nan(s21_cos(num));
+    ck_assert_double_nan(s21_sin(num));
+	ck_assert_double_nan(s21_tan(num));
+	ck_assert_double_nan(s21_acos(num));
+	ck_assert_double_nan(s21_asin(num));
+	ck_assert_double_eq(s21_atan(num), atanl(num));
+
+    num = S21_NAN;
+    ck_assert_double_nan(s21_cos(num));
+    ck_assert_double_nan(s21_sin(num));
+	ck_assert_double_nan(s21_tan(num));
+	ck_assert_double_nan(s21_acos(num));
+	ck_assert_double_nan(s21_asin(num));
+	ck_assert_double_nan(s21_atan(num));
+
+
+#test sin_and_cos_and_tan
+    for (double d = -2 * S21_PI; d <= 2 * S21_PI; d += 0.001) {
+		    ck_assert_double_eq_tol(s21_cos(d), cosl(d), 1e-6);
+	        ck_assert_double_eq_tol(s21_sin(d), sinl(d), 1e-6);
+        	ck_assert_double_eq_tol(s21_tan(d), tanl(d), 1e-6);
+	}
+
+#test asin_and_acos
+    for (double d = -1; d <= 1; d += 0.001) {
+        ck_assert_double_eq_tol(s21_acos(d), acosl(d), 1e-6);
+        ck_assert_double_eq_tol(s21_asin(d), asinl(d), 1e-6);
+    }
+	for (double d = 0.999999; d <= 1; d += 1e-7) {
+        ck_assert_double_eq_tol(s21_asin(d), asinl(d), 1e-6);
+		ck_assert_double_eq_tol(s21_asin(-d), asinl(-d), 1e-6);
+		ck_assert_double_eq_tol(s21_atan(d), atanl(d), 1e-6);
+		ck_assert_double_eq_tol(s21_atan(-d), atanl(-d), 1e-6);
+	}
+
+#test atan_func
+    for (double d = 1e0; d <= 1e20; d *= 10) {
+        ck_assert_double_eq_tol(s21_atan(d), atanl(d), 1e-6);
+    }
+
+	for (double d = -1; d <= 1; d += 0.1) {
+        ck_assert_double_eq_tol(s21_atan(d), atanl(d), 1e-6);
+	}
+
+
